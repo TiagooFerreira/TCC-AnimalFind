@@ -24,6 +24,7 @@ export default function SignIn(){
 
                 <Text style={styles.title}>Senha</Text>
                 <TextInput 
+                    secureTextEntry={true}
                     placeholder="Sua senha"
                     style={styles.input}
                 />
@@ -32,7 +33,7 @@ export default function SignIn(){
                     <Text style={styles.buttonText}>Acessar</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.buttonRegister}>
+                <TouchableOpacity onPress={ () => navigation.navigate('Register')}  style={styles.buttonRegister}>
                     <Text style={styles.registerText}>Não possui uma conta? Cadastre-se</Text>
                 </TouchableOpacity>
             </Animatable.View>

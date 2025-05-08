@@ -21,6 +21,12 @@ export default function Routes(){
                 component={SignIn}
                 options={{ headerShown: false}}
             />
+
+            <Stack.Screen
+                name="Register"
+                component={Register}
+                options={{ headerShown: false}}
+            />
         </Stack.Navigator>
     )
 
