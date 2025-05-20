@@ -18,8 +18,26 @@ export default function MainPage(){
     return (
         <View style={styles.container}>
 
-            <Text>Tela principal</Text>
+            <Text style={styles.containerText}>Tela Feed</Text>
 
         </View>
     );
 }
+
+const styles = StyleSheet.create({
+
+    container:{
+        flex: 1,
+        backgroundColor: '#FFFFFF'
+    },
+    containerText:{
+        textAlign: 'center',
+        marginTop: 400,
+        fontSize: 50,
+        
+    }
+
+
+
+
+})
