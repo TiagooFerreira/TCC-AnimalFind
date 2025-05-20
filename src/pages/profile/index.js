@@ -1,8 +1,13 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Alert
+} from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { useNavigation } from '@react-navigation/native';
-import SignIn from '../signIn';
 
 export default function UserDataScreen() {
   const navigation = useNavigation();
@@ -11,7 +16,12 @@ export default function UserDataScreen() {
   const userData = {
     nome: 'João da Silva',
     email: 'joao@email.com',
-    senha: '••••••••', // mascarado apenas visualmente
+    senha: '••••••••',
+  };
+
+  const handleLogout = () => {
+    Alert.alert("Logout", "Sua conta foi deslogada com sucesso.");
+    navigation.navigate('SignIn');
   };
 
   return (
@@ -30,8 +40,8 @@ export default function UserDataScreen() {
         <Text style={styles.label}>Senha:</Text>
         <Text style={styles.info}>{userData.senha}</Text>
 
-        <TouchableOpacity onPress={() => navigation.navigate(SignIn)} style={styles.button}>
-          <Text style={styles.buttonText}>Voltar</Text>
+        <TouchableOpacity onPress={handleLogout} style={styles.button}>
+          <Text style={styles.buttonText}>Sair</Text>
         </TouchableOpacity>
       </Animatable.View>
     </View>
