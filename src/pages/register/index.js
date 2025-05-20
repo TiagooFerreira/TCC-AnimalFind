@@ -9,14 +9,6 @@ export default function Register(){
 
     const navigation = useNavigation();
 
-
-
-
-
-
-
-
-
     return (
         <View style={styles.container}>
             <Animatable.View animation='fadeInLeft' delay={500} style={styles.containerHeader}>

@@ -1,40 +1,92 @@
-import React, { use } from 'react';
-import { 
-    View,
-    Text,
-    StyleSheet,
-    Image,
-    TouchableOpacity
- } from 'react-native'
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import * as Animatable from 'react-native-animatable';
+import { useNavigation } from '@react-navigation/native';
+import SignIn from '../signIn';
 
- import * as Animatable from 'react-native-animatable'
+export default function UserDataScreen() {
+  const navigation = useNavigation();
 
- import { useNavigation } from '@react-navigation/native'
+  // Dados simulados
+  const userData = {
+    nome: 'João da Silva',
+    email: 'joao@email.com',
+    senha: '••••••••', // mascarado apenas visualmente
+  };
 
-export default function Profile(){
+  return (
+    <View style={styles.container}>
+      <Animatable.View animation="fadeInLeft" delay={500} style={styles.containerHeader}>
+        <Text style={styles.message}>Seus dados cadastrados</Text>
+      </Animatable.View>
 
-    const navigation = useNavigation();
+      <Animatable.View animation="fadeInUp" delay={650} style={styles.containerForm}>
+        <Text style={styles.label}>Nome:</Text>
+        <Text style={styles.info}>{userData.nome}</Text>
 
-    return (
-        <View style={styles.container}>
+        <Text style={styles.label}>Email:</Text>
+        <Text style={styles.info}>{userData.email}</Text>
 
-            <Text style={styles.containerText}>Tela Profile</Text>
+        <Text style={styles.label}>Senha:</Text>
+        <Text style={styles.info}>{userData.senha}</Text>
 
-        </View>
-    );
+        <TouchableOpacity onPress={() => navigation.navigate(SignIn)} style={styles.button}>
+          <Text style={styles.buttonText}>Voltar</Text>
+        </TouchableOpacity>
+      </Animatable.View>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-
-    container:{
-        flex: 1,
-        backgroundColor: '#FFFFFF'
-    },
-    containerText:{
-        textAlign: 'center',
-        marginTop: 400,
-        fontSize: 50,
-    }
-
-
-})
+  container:{
+    flex: 1,
+    backgroundColor: '#38a69d',
+  },
+  containerHeader:{
+    marginTop: '14%',
+    marginStart: '8%',
+  },
+  message:{
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginTop: '10%',
+  },
+  containerForm: {
+    backgroundColor: '#fff',
+    flex: 1,
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    padding: '5%',
+    marginTop: '20%',
+  },
+  label: {
+    fontSize: 18,
+    marginTop: 24,
+    color: '#333',
+    fontWeight: 'bold',
+  },
+  info: {
+    fontSize: 16,
+    color: '#555',
+    marginTop: 4,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    paddingBottom: 8,
+  },
+  button: {
+    backgroundColor: '#38a69d',
+    width: '100%',
+    borderRadius: 4,
+    paddingVertical: 10,
+    marginTop: 30,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  buttonText:{
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold'
+  }
+});

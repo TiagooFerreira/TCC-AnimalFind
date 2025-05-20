@@ -16,11 +16,11 @@ export default function MainPage(){
     const navigation = useNavigation();
 
     return (
-        <View style={styles.container}>
+        <Animatable.View animation='fadeInLeft' delay={500} style={styles.containerHeader}>
 
             <Text style={styles.containerText}>Tela Feed</Text>
 
-        </View>
+        </Animatable.View>
     );
 }
 

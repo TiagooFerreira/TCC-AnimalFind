@@ -1,27 +1,52 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Feather } from '@expo/vector-icons'
 
 
 import Feed from "../pages/Feed";
 import Profile from "../pages/profile";
+import MainPage from "../pages/mainPage";
+import { View } from "react-native-animatable";
 
 const Tab = createBottomTabNavigator();
 
 export function TabRoutes(){
     return (
-        <Tab.Navigator>
+        <Tab.Navigator
+        
+        screenOptions={{
+            tabBarActiveTintColor: '#fff',
+            tabBarInactiveTintColor: '#cdcdcd',
+            tabBarStyle: { backgroundColor: '#38A69D'},
+            
+        }}
+
+        >
+
+            <Tab.Screen
+            name="MainPage"
+            component={MainPage}
+            options={{headerShown: false,
+                tabBarIcon: ({ color, size }) => <Feather name="home" color={color} size={size}/>
+            }}
+            />
+
             <Tab.Screen 
             name="Feed" 
             component={Feed}
-            options={{headerShown: false}}
+            options={{headerShown: false,
+                tabBarIcon: ({ color, size }) => <Feather name="plus" color={color} size={size}/>
+            }}
             />
 
             <Tab.Screen 
             name="Profile" 
             component={Profile}
-            options={{headerShown: false}}
+            options={{headerShown: false,
+                tabBarIcon: ({ color, size }) => <Feather name="user" color={color} size={size}/>
+            }}
             />
-
+   
         </Tab.Navigator>
     )
 }

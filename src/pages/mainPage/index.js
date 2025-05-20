@@ -4,7 +4,8 @@ import {
     Text,
     StyleSheet,
     Image,
-    TouchableOpacity
+    TouchableOpacity,
+    ScrollView
  } from 'react-native'
 
  import * as Animatable from 'react-native-animatable'
@@ -16,10 +17,37 @@ export default function MainPage(){
     const navigation = useNavigation();
 
     return (
-        <View style={styles.container}>
+        <ScrollView>
 
-            <Text>Tela principal</Text>
+            <Text style={styles.containerText}>Anuncio</Text>
+            <Text style={styles.containerText}>Tela Principal</Text>
+            <Text style={styles.containerText}>Tela Principal</Text>
+            <Text style={styles.containerText}>Tela Principal</Text>
+            <Text style={styles.containerText}>Tela Principal</Text>
+            <Text style={styles.containerText}>Tela Principal</Text>
+            <Text style={styles.containerText}>Tela Principal</Text>
+            <Text style={styles.containerText}>Tela Principal</Text>
+            <Text style={styles.containerText}>Tela Principal</Text>
 
-        </View>
+        </ScrollView >
     );
 }
+
+const styles = StyleSheet.create({
+
+    container:{
+        flex: 1,
+        backgroundColor: 'cyan'
+    },
+
+    containerText:{
+        textAlign: 'center',
+        marginTop: 300,
+        fontSize: 50,
+    },
+
+
+
+
+
+})
