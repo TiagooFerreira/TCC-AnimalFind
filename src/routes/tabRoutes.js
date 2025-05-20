@@ -24,7 +24,7 @@ export function TabRoutes(){
         >
 
             <Tab.Screen
-            name="MainPage"
+            name="Página Principal"
             component={MainPage}
             options={{headerShown: false,
                 tabBarIcon: ({ color, size }) => <Feather name="home" color={color} size={size}/>
@@ -32,7 +32,7 @@ export function TabRoutes(){
             />
 
             <Tab.Screen 
-            name="Feed" 
+            name="Anunciar" 
             component={Feed}
             options={{headerShown: false,
                 tabBarIcon: ({ color, size }) => <Feather name="plus" color={color} size={size}/>
@@ -40,7 +40,7 @@ export function TabRoutes(){
             />
 
             <Tab.Screen 
-            name="Profile" 
+            name="Meu Perfil" 
             component={Profile}
             options={{headerShown: false,
                 tabBarIcon: ({ color, size }) => <Feather name="user" color={color} size={size}/>
