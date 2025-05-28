@@ -17,23 +17,23 @@ export default function Register(){
 
             <Animatable.View animation="fadeInUp" delay={650} style={styles.containerForm}>
                 <Text style={styles.title}>Nome</Text>
-                <TextInput 
-                    placeholder="Digite seu nome..."
-                    style={styles.input}
-                />
+                    <TextInput 
+                        placeholder="Digite seu nome..."
+                        style={styles.input}
+                    />
 
                 <Text style={styles.title}>Email</Text>
-                <TextInput 
-                    placeholder="Digite seu email..."
-                    style={styles.input}
-                />
+                    <TextInput 
+                        placeholder="Digite seu email..."
+                        style={styles.input}
+                    />
 
                 <Text style={styles.title}>Senha</Text>
-                <TextInput
-                    secureTextEntry={true}
-                    placeholder='Sua senha'
-                    style={styles.input}
-                />
+                    <TextInput
+                        secureTextEntry={true}
+                        placeholder='Sua senha'
+                        style={styles.input}
+                    />
 
                 <TouchableOpacity style={styles.button}>
                     <Text style={styles.buttonText}>Cadastrar</Text>

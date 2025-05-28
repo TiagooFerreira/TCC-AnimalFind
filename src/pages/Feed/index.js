@@ -1,78 +1,96 @@
 import React, { useState } from 'react';
+
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert,
-  ScrollView
+  ScrollView, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard
 } from 'react-native';
+
 import * as ImagePicker from 'expo-image-picker';
 import * as Animatable from 'react-native-animatable';
+import { useNavigation } from '@react-navigation/native';
 
 export default function RegisterPet() {
-  const [photo, setPhoto] = useState(null);
 
-  const handleSelectPhoto = async () => {
+    const navigation = useNavigation();
+
+    const [photo, setPhoto] = useState(null);
+
+    const handleSelectPhoto = async () => {
+
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       quality: 1,
       allowsEditing: true,
     });
 
-    if (!result.canceled) {
-      setPhoto(result.assets[0].uri);
-    }
-  };
+        if (!result.canceled) {
+        setPhoto(result.assets[0].uri);
+        }
+    };
 
-  const handlePublish = () => {
-    Alert.alert("Anúncio publicado!", "Seu animal foi cadastrado com sucesso.");
-    // Aqui você pode enviar os dados para um backend, se quiser
-  };
+    const handlePublish = () => {
+        Alert.alert("Anúncio publicado!", "Seu animal foi cadastrado com sucesso.");
+        // ...
+    };
 
-  return (
-    <ScrollView style={styles.container}>
-      <Animatable.View animation="fadeInLeft" delay={300} style={styles.header}>
-        <Text style={styles.title}>Cadastrar animal para adoção</Text>
-      </Animatable.View>
+    return (
+        <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <ScrollView style={styles.container} contentContainerStyle={{ flexGrow: 1 }}>
+          <Animatable.View animation="fadeInLeft" delay={300} style={styles.header}>
+            <Text style={styles.title}>Cadastrar animal para adoção</Text>
+          </Animatable.View>
 
-      <Animatable.View animation="fadeInUp" delay={500} style={styles.form}>
-        <Text style={styles.label}>Nome do animal</Text>
-        <TextInput style={styles.input} placeholder="Ex: Luna" />
+          <Animatable.View animation="fadeInUp" delay={500} style={styles.form}>
+            <Text style={styles.label}>Nome do animal</Text>
+            <TextInput style={styles.input} placeholder="Ex: Luna" />
 
-        <Text style={styles.label}>Tipo</Text>
-        <TextInput style={styles.input} placeholder="Cachorro ou Gato" />
+            <Text style={styles.label}>Tipo</Text>
+            <TextInput style={styles.input} placeholder="Cachorro ou Gato" />
 
-        <Text style={styles.label}>Raça</Text>
-        <TextInput style={styles.input} placeholder="Ex: SRD, Poodle..." />
+            <Text style={styles.label}>Raça</Text>
+            <TextInput style={styles.input} placeholder="Ex: SRD, Poodle..." />
 
-        <Text style={styles.label}>Idade</Text>
-        <TextInput style={styles.input} placeholder="Ex: 2 anos" />
+            <Text style={styles.label}>Idade</Text>
+            <TextInput style={styles.input} placeholder="Ex: 2 anos" />
 
-        <Text style={styles.label}>Sexo</Text>
-        <TextInput style={styles.input} placeholder="Macho ou Fêmea" />
+            <Text style={styles.label}>Sexo</Text>
+            <TextInput style={styles.input} placeholder="Macho ou Fêmea" />
 
-        <Text style={styles.label}>Castrado?</Text>
-        <TextInput style={styles.input} placeholder="Sim ou Não" />
+            <Text style={styles.label}>Castrado?</Text>
+            <TextInput style={styles.input} placeholder="Sim ou Não" />
 
-        <Text style={styles.label}>Vacinado?</Text>
-        <TextInput style={styles.input} placeholder="Sim ou Não" />
+            <Text style={styles.label}>Vacinado?</Text>
+            <TextInput style={styles.input} placeholder="Sim ou Não" />
 
-        <Text style={styles.label}>Temperamento</Text>
-        <TextInput style={styles.input} placeholder="Ex: Calmo, brincalhão, medroso..." />
+            <Text style={styles.label}>Temperamento</Text>
+            <TextInput style={styles.input} placeholder="Ex: Calmo, brincalhão, medroso..." />
 
-        <Text style={styles.label}>Contato para adoção</Text>
-        <TextInput style={styles.input} placeholder="Ex: (99) 99999-9999" keyboardType="phone-pad" />
+            <Text style={styles.label}>Contato para adoção</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Ex: (99) 99999-9999"
+              keyboardType="phone-pad"
+            />
 
-        <TouchableOpacity onPress={handleSelectPhoto} style={styles.photoButton}>
-          <Text style={styles.photoButtonText}>Selecionar foto do animal</Text>
-        </TouchableOpacity>
+            <TouchableOpacity onPress={handleSelectPhoto} style={styles.photoButton}>
+              <Text style={styles.photoButtonText}>Selecionar foto do animal</Text>
+            </TouchableOpacity>
 
-        {photo && (
-          <Image source={{ uri: photo }} style={styles.imagePreview} />
-        )}
+            {photo && (
+              <Image source={{ uri: photo }} style={styles.imagePreview} />
+            )}
 
-        <TouchableOpacity onPress={handlePublish} style={styles.publishButton}>
-          <Text style={styles.publishButtonText}>Publicar anúncio</Text>
-        </TouchableOpacity>
-      </Animatable.View>
-    </ScrollView>
+            <TouchableOpacity onPress={handlePublish} style={styles.publishButton}>
+              <Text style={styles.publishButtonText}>Publicar anúncio</Text>
+            </TouchableOpacity>
+          </Animatable.View>
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
 

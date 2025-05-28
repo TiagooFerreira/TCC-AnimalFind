@@ -7,6 +7,7 @@ import MainPage from '../pages/mainPage'
 import { NavigationContainer } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { TabRoutes } from './tabRoutes'
+import PostDetail from '../pages/postDetail'
 
 const Stack = createNativeStackNavigator();
 
@@ -33,9 +34,15 @@ export default function StackRoutes(){
                 />
 
                 <Stack.Screen
-                    name='MainPage'
+                    name="MainPage"
                     component={TabRoutes}
                     options={{ headerShown: false}}
+                />
+
+                <Stack.Screen
+                    name="PostDetail"
+                    component={PostDetail}
+                    options={{headerShown: false}}
                 />
 
             </Stack.Navigator>
