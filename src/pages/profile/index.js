@@ -14,7 +14,7 @@ import { useNavigation } from '@react-navigation/native';
 export default function UserDataScreen() {
     const navigation = useNavigation();
 
-  // Dados simulados
+    // Dados simulados
     const userData = {
         nome: 'João da Silva',
         email: 'joao@email.com',
@@ -24,7 +24,13 @@ export default function UserDataScreen() {
     const handleLogout = () => {
         Alert.alert("Logout", "Sua conta foi deslogada com sucesso.");
         navigation.navigate('SignIn');
-};
+    };
+
+    const handleChangePassword = () => {
+        Alert.alert("Trocar Senha", "Aqui você poderá trocar sua senha.");
+        // Aqui você pode navegar para a tela de troca de senha, se existir
+        // navigation.navigate('ChangePassword');
+    };
 
     return (
         <View style={styles.container}>
@@ -42,66 +48,81 @@ export default function UserDataScreen() {
                 <Text style={styles.label}>Senha:</Text>
                 <Text style={styles.info}>{userData.senha}</Text>
 
+                <TouchableOpacity onPress={handleChangePassword} style={styles.buttonChangePassword}>
+                    <Text style={styles.buttonTextChangePassword}>Trocar Senha</Text>
+                </TouchableOpacity>
+
                 <TouchableOpacity onPress={handleLogout} style={styles.button}>
                     <Text style={styles.buttonText}>Sair</Text>
                 </TouchableOpacity>
             </Animatable.View>
         </View>
-  );
+    );
 }
 
 const styles = StyleSheet.create({
     container:{
-    flex: 1,
-    backgroundColor: '#38a69d',
-},
+        flex: 1,
+        backgroundColor: '#38a69d',
+    },
     containerHeader:{
-    marginTop: '14%',
-    marginStart: '8%',
-},
+        marginTop: '14%',
+        marginStart: '8%',
+    },
     message:{
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginTop: '10%',
-},
+        fontSize: 28,
+        fontWeight: 'bold',
+        color: '#fff',
+        marginTop: '10%',
+    },
     containerForm: {
-    backgroundColor: '#fff',
-    flex: 1,
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
-    padding: '5%',
-    marginTop: '20%',
-},
+        backgroundColor: '#fff',
+        flex: 1,
+        borderTopLeftRadius: 25,
+        borderTopRightRadius: 25,
+        padding: '5%',
+        marginTop: '20%',
+    },
     label: {
-    fontSize: 18,
-    marginTop: 24,
-    color: '#333',
-    fontWeight: 'bold',
-},
+        fontSize: 18,
+        marginTop: 24,
+        color: '#333',
+        fontWeight: 'bold',
+    },
     info: {
-    fontSize: 16,
-    color: '#555',
-    marginTop: 4,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-    paddingBottom: 8,
-},
+        fontSize: 16,
+        color: '#555',
+        marginTop: 4,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ccc',
+        paddingBottom: 8,
+    },
+    buttonChangePassword: {
+        backgroundColor: '#f2b01e', // amarelo
+        width: '100%',
+        borderRadius: 4,
+        paddingVertical: 10,
+        marginTop: 30,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    buttonTextChangePassword: {
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: 'bold'
+    },
     button: {
-    backgroundColor: '#38a69d',
-    width: '100%',
-    borderRadius: 4,
-    paddingVertical: 10,
-    marginTop: 30,
-    justifyContent: 'center',
-    alignItems: 'center'
-},
+        backgroundColor: '#38a69d',
+        width: '100%',
+        borderRadius: 4,
+        paddingVertical: 10,
+        marginTop: 20,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
     buttonText:{
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold'
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: 'bold'
     }
-
-}
-
-);
+});

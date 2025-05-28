@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity} from 'react-native'
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView} from 'react-native'
 
 import * as Animatable from 'react-native-animatable'
 
@@ -10,7 +10,7 @@ export default function Register(){
     const navigation = useNavigation();
 
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <Animatable.View animation='fadeInLeft' delay={500} style={styles.containerHeader}>
                 <Text style={styles.message}>Faça seu cadastro</Text>
             </Animatable.View>
@@ -26,6 +26,20 @@ export default function Register(){
                     <TextInput 
                         placeholder="Digite seu email..."
                         style={styles.input}
+                    />
+
+                <Text style={styles.title}>Telefone</Text>
+                    <TextInput 
+                        placeholder="Digite seu telefone..."
+                        style={styles.input}
+                        keyboardType="phone-pad"
+                    />
+
+                <Text style={styles.title}>CPF</Text>
+                    <TextInput 
+                        placeholder="Digite seu CPF..."
+                        style={styles.input}
+                        keyboardType="numeric"
                     />
 
                 <Text style={styles.title}>Senha</Text>
@@ -44,7 +58,7 @@ export default function Register(){
                 </TouchableOpacity>
             </Animatable.View>
 
-        </View>
+        </ScrollView>
     );
 }
 
@@ -54,14 +68,14 @@ const styles = StyleSheet.create({
         backgroundColor: '#38a69d',
     },
     containerHeader:{
-        marginTop: '14%',
+        marginTop: '8%',
         marginStart: '8%',
     },
     message:{
         fontSize: 28,
         fontWeight: 'bold',
         color: '#fff',
-        marginTop: '10%'
+        marginTop: '4%',
     },
     containerForm: {
         backgroundColor: '#fff',
