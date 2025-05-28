@@ -1,5 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Alert, Linking } from 'react-native';
+import { FontAwesome, MaterialIcons, Entypo } from '@expo/vector-icons';
+
 
 export default function PostDetail({ route }) {
   const { pet } = route.params;
@@ -82,15 +84,24 @@ export default function PostDetail({ route }) {
 
           <View style={styles.buttonsContainer}>
             <TouchableOpacity style={[styles.button, styles.localizacaoButton]} onPress={handleLocalizacao}>
-              <Text style={styles.buttonText}>Localização</Text>
+              <View style={styles.buttonContent}>
+                <Entypo name="location-pin" size={20} color="#fff" />
+                <Text style={styles.buttonText}> Localização</Text>
+              </View>
             </TouchableOpacity>
 
             <TouchableOpacity style={[styles.button, styles.contatoButton]} onPress={handleContato}>
-              <Text style={styles.buttonText}>Fazer Contato</Text>
+              <View style={styles.buttonContent}>
+                <FontAwesome name="phone" size={20} color="#fff" />
+                <Text style={styles.buttonText}> Fazer Contato</Text>
+              </View>
             </TouchableOpacity>
 
             <TouchableOpacity style={[styles.button, styles.denunciarButton]} onPress={handleDenunciar}>
-              <Text style={styles.buttonText}>Denunciar</Text>
+              <View style={styles.buttonContent}>
+                <MaterialIcons name="report-problem" size={20} color="#fff" />
+                <Text style={styles.buttonText}> Denunciar</Text>
+              </View>
             </TouchableOpacity>
           </View>
         </View>
@@ -110,10 +121,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    width: '100%',
-    height: 300,
-    borderRadius: 15,
-  },
+  width: '100%',
+  height: 300,
+  borderRadius: 15,
+  borderWidth: 3,
+  borderColor: '#38a69d',  // ou qualquer cor desejada
+},
   infoContainer: {
     backgroundColor: '#38a69d',
     borderRadius: 15,
@@ -174,4 +187,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 18,
   },
+  buttonContent: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'center',
+},
 });

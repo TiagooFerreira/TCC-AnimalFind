@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert,
   ScrollView, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard
@@ -8,98 +7,101 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 import * as Animatable from 'react-native-animatable';
 import { useNavigation } from '@react-navigation/native';
+import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 
 export default function RegisterPet() {
+  const navigation = useNavigation();
+  const [photo, setPhoto] = useState(null);
 
-    const navigation = useNavigation();
+  const handleSelectPhoto = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      quality: 1,
+      allowsEditing: true,
+    });
 
-    const [photo, setPhoto] = useState(null);
+    if (!result.canceled) {
+      setPhoto(result.assets[0].uri);
+    }
+  };
 
-    const handleSelectPhoto = async () => {
-        const result = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.Images,
-          quality: 1,
-          allowsEditing: true,
-        });
+  const handleSelectLocation = () => {
+    Alert.alert("Selecionar Localização", "Aqui você pode integrar um mapa ou usar o GPS.");
+  };
 
-        if (!result.canceled) {
-            setPhoto(result.assets[0].uri);
-        }
-    };
+  const handlePublish = () => {
+    Alert.alert("Anúncio publicado!", "Seu animal foi cadastrado com sucesso.");
+  };
 
-    const handleSelectLocation = () => {
-        Alert.alert("Selecionar Localização", "Aqui você pode integrar um mapa ou selecionar sua localização.");
-        // Aqui poderia abrir um modal ou navegação para tela de mapa
-    };
+  return (
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ScrollView style={styles.container} contentContainerStyle={{ flexGrow: 1 }}>
+          <Animatable.View animation="fadeInLeft" delay={300} style={styles.header}>
+            <Text style={styles.title}>Cadastrar animal para Adoção</Text>
+          </Animatable.View>
 
-    const handlePublish = () => {
-        Alert.alert("Anúncio publicado!", "Seu animal foi cadastrado com sucesso.");
-        // ...
-    };
+          <Animatable.View animation="fadeInUp" delay={500} style={styles.form}>
+            <Text style={styles.label}>Nome do animal</Text>
+            <TextInput style={styles.input} placeholder="Ex: Luna" />
 
-    return (
-        <KeyboardAvoidingView
-            style={{ flex: 1 }}
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        >
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <ScrollView style={styles.container} contentContainerStyle={{ flexGrow: 1 }}>
-                  <Animatable.View animation="fadeInLeft" delay={300} style={styles.header}>
-                    <Text style={styles.title}>Cadastrar animal para adoção</Text>
-                  </Animatable.View>
+            <Text style={styles.label}>Tipo</Text>
+            <TextInput style={styles.input} placeholder="Cachorro ou Gato" />
 
-                  <Animatable.View animation="fadeInUp" delay={500} style={styles.form}>
-                    <Text style={styles.label}>Nome do animal</Text>
-                    <TextInput style={styles.input} placeholder="Ex: Luna" />
+            <Text style={styles.label}>Raça</Text>
+            <TextInput style={styles.input} placeholder="Ex: SRD, Poodle..." />
 
-                    <Text style={styles.label}>Tipo</Text>
-                    <TextInput style={styles.input} placeholder="Cachorro ou Gato" />
+            <Text style={styles.label}>Idade</Text>
+            <TextInput style={styles.input} placeholder="Ex: 2 anos" />
 
-                    <Text style={styles.label}>Raça</Text>
-                    <TextInput style={styles.input} placeholder="Ex: SRD, Poodle..." />
+            <Text style={styles.label}>Sexo</Text>
+            <TextInput style={styles.input} placeholder="Macho ou Fêmea" />
 
-                    <Text style={styles.label}>Idade</Text>
-                    <TextInput style={styles.input} placeholder="Ex: 2 anos" />
+            <Text style={styles.label}>Castrado?</Text>
+            <TextInput style={styles.input} placeholder="Sim ou Não" />
 
-                    <Text style={styles.label}>Sexo</Text>
-                    <TextInput style={styles.input} placeholder="Macho ou Fêmea" />
+            <Text style={styles.label}>Vacinado?</Text>
+            <TextInput style={styles.input} placeholder="Sim ou Não" />
 
-                    <Text style={styles.label}>Castrado?</Text>
-                    <TextInput style={styles.input} placeholder="Sim ou Não" />
+            <Text style={styles.label}>Temperamento</Text>
+            <TextInput style={styles.input} placeholder="Ex: Calmo, brincalhão, medroso..." />
 
-                    <Text style={styles.label}>Vacinado?</Text>
-                    <TextInput style={styles.input} placeholder="Sim ou Não" />
+            <Text style={styles.label}>Contato para adoção</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Ex: (99) 99999-9999"
+              keyboardType="phone-pad"
+            />
 
-                    <Text style={styles.label}>Temperamento</Text>
-                    <TextInput style={styles.input} placeholder="Ex: Calmo, brincalhão, medroso..." />
+            <TouchableOpacity onPress={handleSelectPhoto} style={styles.photoButton}>
+              <Text style={styles.photoButtonText}>
+                <FontAwesome name="camera" size={16} /> Selecionar foto do animal
+              </Text>
+            </TouchableOpacity>
 
-                    <Text style={styles.label}>Contato para adoção</Text>
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Ex: (99) 99999-9999"
-                      keyboardType="phone-pad"
-                    />
+            {photo && (
+              <>
+                <Text style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16 }}>Pré-visualização:</Text>
+                <Image source={{ uri: photo }} style={styles.imagePreview} />
+              </>
+            )}
 
-                    <TouchableOpacity onPress={handleSelectPhoto} style={styles.photoButton}>
-                      <Text style={styles.photoButtonText}>Selecionar foto do animal</Text>
-                    </TouchableOpacity>
+            <TouchableOpacity onPress={handleSelectLocation} style={styles.locationButton}>
+              <Text style={styles.locationButtonText}>
+                <FontAwesome name="map-marker" size={16} /> Selecionar localização
+              </Text>
+            </TouchableOpacity>
 
-                    {photo && (
-                      <Image source={{ uri: photo }} style={styles.imagePreview} />
-                    )}
-
-                    <TouchableOpacity onPress={handleSelectLocation} style={styles.locationButton}>
-                      <Text style={styles.locationButtonText}>Selecionar localização</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity onPress={handlePublish} style={styles.publishButton}>
-                      <Text style={styles.publishButtonText}>Publicar anúncio</Text>
-                    </TouchableOpacity>
-                  </Animatable.View>
-                </ScrollView>
-            </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
-    );
+            <TouchableOpacity onPress={handlePublish} style={styles.publishButton}>
+              <Text style={styles.publishButtonText}>
+                <FontAwesome name="check" size={16} /> Publicar anúncio
+              </Text>
+            </TouchableOpacity>
+          </Animatable.View>
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -109,12 +111,14 @@ const styles = StyleSheet.create({
   },
   header: {
     marginTop: '10%',
-    marginLeft: '5%',
+    alignItems: 'center',
+    marginBottom: 10,
   },
   title: {
     color: '#fff',
     fontSize: 26,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   form: {
     backgroundColor: '#fff',
@@ -128,6 +132,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     fontSize: 16,
     fontWeight: 'bold',
+    color: '#333',
   },
   input: {
     borderBottomWidth: 1,
@@ -149,23 +154,25 @@ const styles = StyleSheet.create({
   },
   imagePreview: {
     width: '100%',
-    height: 200,
-    marginTop: 10,
-    borderRadius: 8,
+    height: 250,
+    marginTop: 16,
+    borderRadius: 12,
     resizeMode: 'cover',
+    borderWidth: 2,
+    borderColor: '#38a69d',
   },
- locationButton: {
-  marginTop: 16,
-  backgroundColor: '#4A90E2', // azul
-  paddingVertical: 12,
-  borderRadius: 6,
-  alignItems: 'center',
-},
-locationButtonText: {
-  color: '#fff',
-  fontSize: 16,
-  fontWeight: 'bold',
-},
+  locationButton: {
+    marginTop: 16,
+    backgroundColor: '#4A90E2',
+    paddingVertical: 12,
+    borderRadius: 6,
+    alignItems: 'center',
+  },
+  locationButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
   publishButton: {
     backgroundColor: '#38a69d',
     marginTop: 30,
