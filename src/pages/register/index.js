@@ -1,40 +1,40 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView} from 'react-native'
-
 import * as Animatable from 'react-native-animatable'
-
-import { getDatabase, ref, set, push } from 'firebase/database';
-
 import { useNavigation } from '@react-navigation/native'
-import { firebase } from '../../../firebase.config';
+
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../../firebase.config';
+
+import { getFirestore, doc, setDoc } from 'firebase/firestore';
 
 export default function Register(){
 
-        const [inputName, setInputName] = useState('');  
-        const [inputEmail, setInputEmail] = useState('');  
-        const [inputTel, setInputTel] = useState('');  
-        const [inputCPF, setInputCPF] = useState('');  
-        const [inputPass, setInputPass] = useState('');  
-
-        const saveData = async () => {
-            const db = getDatabase(firebase);
-            const newDocRef = push(ref(db, "bdanimalfind/users"));
-            set(newDocRef, {
-                name: inputName,
-                email: inputEmail,
-                tel: inputTel,
-                cpf: inputCPF,
-                pass: inputPass
-            }).then( () => {
-                alert("Cadastro realizado")
-                navigation.navigate("SignIn");
-            }).catch((error) =>{
-                alert("error: " + error.message);
-            })
-        
-        }
-
     const navigation = useNavigation();
+
+    const [inputName, setInputName] = useState("");
+    const [inputEmail, setInputEmail] = useState("");
+    const [inputTel, setInputTel] = useState("");
+    const [inputCPF, setInputCPF] = useState("");
+    const [inputPass, setInputPass] = useState("");
+
+    const db = getFirestore();
+
+    function registerUser() {
+    if (!inputEmail || !inputPass) {
+      alert('Preencha email e senha');
+      return;
+    }
+
+    createUserWithEmailAndPassword(auth, inputEmail, inputPass)
+      .then(() => {
+        alert('Usuário cadastrado com sucesso!');
+        navigation.navigate('SignIn');
+      })
+      .catch(error => {
+        alert(error.message);
+      });
+  }
 
     return (
         <ScrollView style={styles.container}>
@@ -86,7 +86,7 @@ export default function Register(){
                         onChangeText={setInputPass}
                     />
 
-                <TouchableOpacity style={styles.button} onPress={saveData}>
+                <TouchableOpacity style={styles.button} onPress={registerUser}>
                     <Text style={styles.buttonText}>Cadastrar</Text>
                 </TouchableOpacity>
 
