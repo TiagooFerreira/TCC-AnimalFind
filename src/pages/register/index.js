@@ -1,11 +1,38 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView} from 'react-native'
 
 import * as Animatable from 'react-native-animatable'
 
+import { getDatabase, ref, set, push } from 'firebase/database';
+
 import { useNavigation } from '@react-navigation/native'
+import { firebase } from '../../../firebase.config';
 
 export default function Register(){
+
+        const [inputName, setInputName] = useState('');  
+        const [inputEmail, setInputEmail] = useState('');  
+        const [inputTel, setInputTel] = useState('');  
+        const [inputCPF, setInputCPF] = useState('');  
+        const [inputPass, setInputPass] = useState('');  
+
+        const saveData = async () => {
+            const db = getDatabase(firebase);
+            const newDocRef = push(ref(db, "bdanimalfind/users"));
+            set(newDocRef, {
+                name: inputName,
+                email: inputEmail,
+                tel: inputTel,
+                cpf: inputCPF,
+                pass: inputPass
+            }).then( () => {
+                alert("Cadastro realizado")
+                navigation.navigate("SignIn");
+            }).catch((error) =>{
+                alert("error: " + error.message);
+            })
+        
+        }
 
     const navigation = useNavigation();
 
@@ -20,12 +47,16 @@ export default function Register(){
                     <TextInput 
                         placeholder="Digite seu nome..."
                         style={styles.input}
+                        value={inputName}
+                        onChangeText={setInputName}
                     />
 
                 <Text style={styles.title}>Email</Text>
                     <TextInput 
                         placeholder="Digite seu email..."
                         style={styles.input}
+                        value={inputEmail}
+                        onChangeText={setInputEmail}
                     />
 
                 <Text style={styles.title}>Telefone</Text>
@@ -33,6 +64,8 @@ export default function Register(){
                         placeholder="Digite seu telefone..."
                         style={styles.input}
                         keyboardType="phone-pad"
+                        value={inputTel}
+                        onChangeText={setInputTel}
                     />
 
                 <Text style={styles.title}>CPF</Text>
@@ -40,6 +73,8 @@ export default function Register(){
                         placeholder="Digite seu CPF..."
                         style={styles.input}
                         keyboardType="numeric"
+                        value={inputCPF}
+                        onChangeText={setInputCPF}
                     />
 
                 <Text style={styles.title}>Senha</Text>
@@ -47,9 +82,11 @@ export default function Register(){
                         secureTextEntry={true}
                         placeholder='Sua senha'
                         style={styles.input}
+                        value={inputPass}
+                        onChangeText={setInputPass}
                     />
 
-                <TouchableOpacity style={styles.button}>
+                <TouchableOpacity style={styles.button} onPress={saveData}>
                     <Text style={styles.buttonText}>Cadastrar</Text>
                 </TouchableOpacity>
 
@@ -65,7 +102,7 @@ export default function Register(){
 const styles = StyleSheet.create({
     container:{
         flex: 1,
-        backgroundColor: '#38a69d',
+        backgroundColor: '#04bc64',
     },
     containerHeader:{
         marginTop: '8%',
@@ -97,7 +134,7 @@ const styles = StyleSheet.create({
         fontSize: 16
     },
     button:{
-        backgroundColor: '#38a69d',
+        backgroundColor: '#04bc64',
         width: '100%',
         borderRadius: 4,
         paddingVertical: 8,

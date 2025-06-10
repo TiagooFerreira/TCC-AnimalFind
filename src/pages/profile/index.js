@@ -63,7 +63,7 @@ export default function UserDataScreen() {
 const styles = StyleSheet.create({
     container:{
         flex: 1,
-        backgroundColor: '#38a69d',
+        backgroundColor: '#04bc64',
     },
     containerHeader:{
         marginTop: '14%',
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     button: {
-        backgroundColor: '#38a69d',
+        backgroundColor: '#04bc64',
         width: '100%',
         borderRadius: 4,
         paddingVertical: 10,

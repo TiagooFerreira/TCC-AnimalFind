@@ -37,7 +37,7 @@ export default function PostDetail({ route }) {
   };
 
   const handleContato = () => {
-    let telefone = pet.contato.replace(/[^\d]/g, ''); // Remove tudo que não é número, ex: (88) 88888-8888 vira 888888888
+    let telefone = pet.contato.replace(/[^\d]/g, '');
     const url = `tel:${telefone}`;
     Linking.canOpenURL(url)
       .then(supported => {
@@ -125,10 +125,10 @@ const styles = StyleSheet.create({
   height: 300,
   borderRadius: 15,
   borderWidth: 3,
-  borderColor: '#38a69d',  // ou qualquer cor desejada
+  borderColor: '#fff', 
 },
   infoContainer: {
-    backgroundColor: '#38a69d',
+    backgroundColor: '#04bc64',
     borderRadius: 15,
     padding: 20,
     marginTop: 20,
@@ -150,23 +150,23 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginTop: 12,
-    color: '#e0e0e0',
+    color: '#fff',
   },
   value: {
     fontSize: 16,
     marginTop: 4,
-    color: '#f5f5f5',
+    color: '#f0f0f0',
   },
   buttonsContainer: {
     marginTop: 30,
     width: '80%',
-    alignSelf: 'center',  // centraliza horizontalmente
+    alignSelf: 'center',
   },
   button: {
     paddingVertical: 16,
     borderRadius: 12,
     alignItems: 'center',
-    marginVertical: 10,  // espaçamento vertical entre botões
+    marginVertical: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.3,

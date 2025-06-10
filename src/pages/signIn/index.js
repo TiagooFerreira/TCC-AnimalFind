@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity} from 'react-native'
 import {} from '@react-navigation/native'
 
@@ -6,7 +6,27 @@ import * as Animatable from 'react-native-animatable'
 
 import { useNavigation } from '@react-navigation/native'
 
+import { auth } from '../../../firebase.config';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+
 export default function SignIn(){
+
+    const [userMail, setUserMail] = useState('');
+    const [userPass, setUserPass] = useState('');
+
+    function userLogin(){
+        signInWithEmailAndPassword(auth, userMail, userPass).then((userCrential) => {
+            const user = userCrential.user;
+
+            alert('Login Efetuado...');
+            navigation.navigate('MainPage')
+        })
+        .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            alert(errorMessage)
+        })
+    }
 
     const navigation = useNavigation();
 
@@ -20,17 +40,22 @@ export default function SignIn(){
                 <Text style={styles.title}>Email</Text>
                 <TextInput 
                     placeholder="Digite um Email..."
+                    value={userMail}
+                    onChangeText={setUserMail}
                     style={styles.input}
+
                 />
 
                 <Text style={styles.title}>Senha</Text>
                 <TextInput 
                     secureTextEntry={true}
                     placeholder="Sua senha"
+                    value={userPass}
+                    onChangeText={setUserPass}
                     style={styles.input}
                 />
 
-                <TouchableOpacity onPress={ () => navigation.navigate('MainPage')} style={styles.button}>
+                <TouchableOpacity onPress={userLogin} style={styles.button}>
                     <Text style={styles.buttonText}>Acessar</Text>
                 </TouchableOpacity>
 
@@ -46,7 +71,7 @@ export default function SignIn(){
 const styles = StyleSheet.create({
     container:{
         flex: 1,
-        backgroundColor: '#38a69d',
+        backgroundColor: '#04bc64',
     },
     containerHeader:{
         marginTop: '14%',
@@ -78,7 +103,7 @@ const styles = StyleSheet.create({
         fontSize: 16
     },
     button:{
-        backgroundColor: '#38a69d',
+        backgroundColor: '#04bc64',
         width: '100%',
         borderRadius: 4,
         paddingVertical: 8,

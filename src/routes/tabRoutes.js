@@ -6,7 +6,6 @@ import { Feather } from '@expo/vector-icons'
 import Feed from "../pages/Feed";
 import Profile from "../pages/profile";
 import MainPage from "../pages/mainPage";
-import { View } from "react-native-animatable";
 
 const Tab = createBottomTabNavigator();
 
@@ -17,7 +16,7 @@ export function TabRoutes(){
         screenOptions={{
             tabBarActiveTintColor: '#fff',
             tabBarInactiveTintColor: '#cdcdcd',
-            tabBarStyle: { backgroundColor: '#38A69D'},
+            tabBarStyle: { backgroundColor: '#04a154'},
             
         }}
 

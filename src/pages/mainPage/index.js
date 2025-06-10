@@ -1,11 +1,12 @@
-import React from 'react';
-
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  View, Text, FlatList, TouchableOpacity,
+  StyleSheet, Image, ActivityIndicator
+} from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 
-const mockPosts = [
-  {
+const mockPosts = [ {
     id: '1',
     nome: 'Levi',
     tipo: 'Cachorro',
@@ -56,13 +57,20 @@ const mockPosts = [
     temperamento: 'Brincalhão e amigável',
     contato: '(88) 88888-8888',
     foto: 'https://placedog.net/400/300'
-  }
-
-  
-];
+  } ];
 
 export default function PostList() {
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Simula um delay de carregamento (2 segundos)
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
@@ -75,8 +83,17 @@ export default function PostList() {
     </TouchableOpacity>
   );
 
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#04bc64" />
+        <Text style={styles.loadingText}>Carregando...</Text>
+      </View>
+    );
+  }
+
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <Text style={styles.header}>Animais para Adoção</Text>
       <FlatList
         data={mockPosts}
@@ -84,44 +101,46 @@ export default function PostList() {
         renderItem={renderItem}
         contentContainerStyle={styles.list}
       />
-    </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: '#fff' 
-},
-  header: { 
-    fontSize: 24, 
-    fontWeight: 'bold', 
+  container: { flex: 1, backgroundColor: '#dcdcdc' },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
     marginTop: 50,
-    margin: 16 
-},
-  list: { 
-    paddingHorizontal: 16 
-},
+    margin: 16
+  },
+  list: { paddingHorizontal: 16 },
   card: {
-    backgroundColor: '#38a69d',
+    backgroundColor: '#04bc64',
     borderRadius: 12,
     marginBottom: 16,
     overflow: 'hidden'
   },
-  image: { 
-    width: '100%', 
-    height: 180 
-},
+  image: { width: '100%', height: 180 },
   name: {
-    fontSize: 20, 
-    fontWeight: 'bold', 
-    padding: 8 
-},
+    fontSize: 20,
+    fontWeight: 'bold',
+    padding: 8
+  },
   info: {
-     fontSize: 16,
+    fontSize: 16,
     color: '#fff',
     paddingHorizontal: 8,
-    paddingBottom: 8 
-}
-
+    paddingBottom: 8
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff'
+  },
+  loadingText: {
+    marginTop: 12,
+    fontSize: 16,
+    color: '#04bc64'
+  }
 });

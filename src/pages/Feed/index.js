@@ -107,7 +107,7 @@ export default function RegisterPet() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#38a69d',
+    backgroundColor: '#04a154',
   },
   header: {
     marginTop: '10%',
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     resizeMode: 'cover',
     borderWidth: 2,
-    borderColor: '#38a69d',
+    borderColor: '#04bc64',
   },
   locationButton: {
     marginTop: 16,
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   publishButton: {
-    backgroundColor: '#38a69d',
+    backgroundColor: '#04bc64',
     marginTop: 30,
     paddingVertical: 12,
     borderRadius: 6,
