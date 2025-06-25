@@ -1,17 +1,31 @@
 import React, { useState } from 'react';
 import {
-  View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert,
-  ScrollView, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard
+  View, Text, TextInput, TouchableOpacity, StyleSheet, Image,
+  ScrollView, KeyboardAvoidingView, Platform, TouchableWithoutFeedback,
+  Keyboard, Modal
 } from 'react-native';
 
 import * as ImagePicker from 'expo-image-picker';
 import * as Animatable from 'react-native-animatable';
 import { useNavigation } from '@react-navigation/native';
-import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 
 export default function RegisterPet() {
   const navigation = useNavigation();
+
   const [photo, setPhoto] = useState(null);
+  const [nome, setNome] = useState('');
+  const [tipo, setTipo] = useState('');
+  const [raca, setRaca] = useState('');
+  const [idade, setIdade] = useState('');
+  const [sexo, setSexo] = useState('');
+  const [castrado, setCastrado] = useState('');
+  const [vacinado, setVacinado] = useState('');
+  const [temperamento, setTemperamento] = useState('');
+  const [contato, setContato] = useState('');
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
 
   const handleSelectPhoto = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -26,11 +40,31 @@ export default function RegisterPet() {
   };
 
   const handleSelectLocation = () => {
-    Alert.alert("Selecionar Localização", "Aqui você pode integrar um mapa ou usar o GPS.");
+    // Aqui você pode integrar com mapa/GPS futuramente
+    setModalMessage('Funcionalidade de localização ainda não implementada.');
+    setModalVisible(true);
   };
 
   const handlePublish = () => {
-    Alert.alert("Anúncio publicado!", "Seu animal foi cadastrado com sucesso.");
+    if (
+      !nome || !tipo || !raca || !idade || !sexo || !castrado ||
+      !vacinado || !temperamento || !contato || !photo
+    ) {
+      setModalMessage('Um ou mais campos sem informação.');
+    } else {
+      setModalMessage('Anúncio publicado com sucesso.');
+      setNome('');
+      setTipo('');
+      setRaca('');
+      setIdade('');
+      setSexo('');
+      setCastrado('');
+      setVacinado('');
+      setTemperamento('');
+      setContato('');
+      setPhoto(null);
+    }
+    setModalVisible(true);
   };
 
   return (
@@ -43,34 +77,41 @@ export default function RegisterPet() {
 
           <Animatable.View animation="fadeInUp" delay={500} style={styles.form}>
             <Text style={styles.label}>Nome do animal</Text>
-            <TextInput style={styles.input} placeholder="Ex: Luna" />
+            <TextInput style={styles.input} placeholder="Ex: Luna" value={nome} onChangeText={setNome} />
 
             <Text style={styles.label}>Tipo</Text>
-            <TextInput style={styles.input} placeholder="Cachorro ou Gato" />
+            <TextInput style={styles.input} placeholder="Cachorro ou Gato" value={tipo} onChangeText={setTipo} />
 
             <Text style={styles.label}>Raça</Text>
-            <TextInput style={styles.input} placeholder="Ex: SRD, Poodle..." />
+            <TextInput style={styles.input} placeholder="Ex: SRD, Poodle..." value={raca} onChangeText={setRaca} />
 
             <Text style={styles.label}>Idade</Text>
-            <TextInput style={styles.input} placeholder="Ex: 2 anos" />
+            <TextInput style={styles.input} placeholder="Ex: 2 anos" value={idade} onChangeText={setIdade} />
 
             <Text style={styles.label}>Sexo</Text>
-            <TextInput style={styles.input} placeholder="Macho ou Fêmea" />
+            <TextInput style={styles.input} placeholder="Macho ou Fêmea" value={sexo} onChangeText={setSexo} />
 
             <Text style={styles.label}>Castrado?</Text>
-            <TextInput style={styles.input} placeholder="Sim ou Não" />
+            <TextInput style={styles.input} placeholder="Sim ou Não" value={castrado} onChangeText={setCastrado} />
 
             <Text style={styles.label}>Vacinado?</Text>
-            <TextInput style={styles.input} placeholder="Sim ou Não" />
+            <TextInput style={styles.input} placeholder="Sim ou Não" value={vacinado} onChangeText={setVacinado} />
 
             <Text style={styles.label}>Temperamento</Text>
-            <TextInput style={styles.input} placeholder="Ex: Calmo, brincalhão, medroso..." />
+            <TextInput
+              style={styles.input}
+              placeholder="Ex: Calmo, brincalhão, medroso..."
+              value={temperamento}
+              onChangeText={setTemperamento}
+            />
 
             <Text style={styles.label}>Contato para adoção</Text>
             <TextInput
               style={styles.input}
               placeholder="Ex: (99) 99999-9999"
               keyboardType="phone-pad"
+              value={contato}
+              onChangeText={setContato}
             />
 
             <TouchableOpacity onPress={handleSelectPhoto} style={styles.photoButton}>
@@ -98,6 +139,22 @@ export default function RegisterPet() {
               </Text>
             </TouchableOpacity>
           </Animatable.View>
+
+          <Modal
+            transparent
+            visible={modalVisible}
+            animationType="fade"
+            onRequestClose={() => setModalVisible(false)}
+          >
+            <View style={styles.modalOverlay}>
+              <View style={styles.modalContainer}>
+                <Text style={styles.modalText}>{modalMessage}</Text>
+                <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.modalButton}>
+                  <Text style={styles.modalButtonText}>OK</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
         </ScrollView>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
@@ -183,6 +240,36 @@ const styles = StyleSheet.create({
   publishButtonText: {
     color: '#fff',
     fontSize: 18,
+    fontWeight: 'bold',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    backgroundColor: '#fff',
+    padding: 25,
+    borderRadius: 12,
+    width: '80%',
+    alignItems: 'center',
+  },
+  modalText: {
+    fontSize: 18,
+    color: '#333',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  modalButton: {
+    backgroundColor: '#04bc64',
+    paddingVertical: 10,
+    paddingHorizontal: 25,
+    borderRadius: 6,
+  },
+  modalButtonText: {
+    color: '#fff',
+    fontSize: 16,
     fontWeight: 'bold',
   },
 });

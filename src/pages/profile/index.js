@@ -11,13 +11,14 @@ import * as Animatable from 'react-native-animatable';
 import { useNavigation } from '@react-navigation/native';
 
 import { getAuth, signOut } from 'firebase/auth';
+import { getDatabase, ref, get } from 'firebase/database';
 
 export default function UserDataScreen() {
   const navigation = useNavigation();
   const [userData, setUserData] = useState({
     nome: '',
     email: '',
-    senha: '••••••••',
+    senha: '••••••••', // Apenas simbólico
   });
 
   useEffect(() => {
@@ -25,11 +26,30 @@ export default function UserDataScreen() {
     const user = auth.currentUser;
 
     if (user) {
-      setUserData({
-        nome: user.displayName || 'Nome não informado',
-        email: user.email || 'Email não disponível',
-        senha: '••••••••'
-      });
+      const uid = user.uid;
+      const db = getDatabase();
+      const userRef = ref(db, 'users/' + uid);
+
+      get(userRef)
+        .then((snapshot) => {
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            setUserData({
+              nome: data.nome || 'Nome não informado',
+              email: user.email || 'Email não disponível',
+              senha: '••••••••'
+            });
+          } else {
+            setUserData({
+              nome: 'Nome não encontrado',
+              email: user.email || 'Email não disponível',
+              senha: '••••••••'
+            });
+          }
+        })
+        .catch((error) => {
+          console.error('Erro ao buscar dados do usuário:', error);
+        });
     }
   }, []);
 
@@ -47,13 +67,17 @@ export default function UserDataScreen() {
 
   const handleChangePassword = () => {
     Alert.alert("Trocar Senha", "Aqui você poderá trocar sua senha.");
-    // Se tiver uma tela de troca de senha, você pode navegar para ela:
+
+
     // navigation.navigate('ChangePassword');
+
+
   };
 
   return (
     <View style={styles.container}>
-      <Animatable.View animation="fadeInLeft" delay={500} style={styles.containerHeader}>
+      <Animatable.View animation="fadeInLeft" delay={300} style={styles.containerHeader}>
+        <Text style={styles.title}>Meu Perfil</Text>
         <Text style={styles.message}>Seus dados cadastrados</Text>
       </Animatable.View>
 
@@ -66,6 +90,10 @@ export default function UserDataScreen() {
 
         <Text style={styles.label}>Senha:</Text>
         <Text style={styles.info}>{userData.senha}</Text>
+
+        <TouchableOpacity onPress={() => navigation.navigate('MyAdsScreen')} style={styles.buttonMyAds}>
+          <Text style={styles.buttonTextMyAds}>Meus anúncios</Text>
+        </TouchableOpacity>
 
         <TouchableOpacity onPress={handleChangePassword} style={styles.buttonChangePassword}>
           <Text style={styles.buttonTextChangePassword}>Trocar Senha</Text>
@@ -85,14 +113,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#04bc64',
   },
   containerHeader:{
-    marginTop: '14%',
+    marginTop: '10%',
     marginStart: '8%',
+  },
+  title: {
+    fontSize: 34,
+    fontWeight: 'bold',
+    color: '#fff',
   },
   message:{
     fontSize: 28,
     fontWeight: 'bold',
     color: '#fff',
-    marginTop: '10%',
+    marginTop: '5%',
   },
   containerForm: {
     backgroundColor: '#fff',
@@ -100,7 +133,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
     padding: '5%',
-    marginTop: '20%',
+    marginTop: '10%',
   },
   label: {
     fontSize: 18,
@@ -115,6 +148,20 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
     paddingBottom: 8,
+  },
+  buttonMyAds: {
+    backgroundColor: '#007bff',
+    width: '100%',
+    borderRadius: 4,
+    paddingVertical: 10,
+    marginTop: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonTextMyAds: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   buttonChangePassword: {
     backgroundColor: '#f2b01e',
@@ -135,7 +182,7 @@ const styles = StyleSheet.create({
     width: '100%',
     borderRadius: 4,
     paddingVertical: 10,
-    marginTop: 20,
+    marginTop: 100,
     justifyContent: 'center',
     alignItems: 'center'
   },

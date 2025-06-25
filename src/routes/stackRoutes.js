@@ -3,11 +3,11 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Welcome from '../pages/welcome'
 import SignIn from '../pages/signIn'
 import Register from '../pages/register'
-import MainPage from '../pages/mainPage'
-import { NavigationContainer } from '@react-navigation/native'
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+
 import { TabRoutes } from './tabRoutes'
 import PostDetail from '../pages/postDetail'
+
+import MyAdsScreen from '../pages/myAddsScreen'
 
 const Stack = createNativeStackNavigator();
 
@@ -42,6 +42,12 @@ export default function StackRoutes(){
                 <Stack.Screen
                     name="PostDetail"
                     component={PostDetail}
+                    options={{headerShown: false}}
+                />
+
+                <Stack.Screen
+                    name="MyAdsScreen"
+                    component={MyAdsScreen}
                     options={{headerShown: false}}
                 />
 

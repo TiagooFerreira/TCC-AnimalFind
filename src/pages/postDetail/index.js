@@ -1,14 +1,26 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Alert, Linking } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  Alert,
+  Linking
+} from 'react-native';
 import { FontAwesome, MaterialIcons, Entypo } from '@expo/vector-icons';
 
-
-export default function PostDetail({ route }) {
+export default function PostDetail({ route, navigation }) {
   const { pet } = route.params;
 
   // Coordenadas fixas para o exemplo — substitua com pet.latitude, pet.longitude se quiser
   const latitude = -23.55052;
   const longitude = -46.633308;
+
+  const handleVoltar = () => {
+    navigation.navigate('MainPage');
+  };
 
   const handleLocalizacao = () => {
     const url = `geo:${latitude},${longitude}?q=${latitude},${longitude}(Localização do Pet)`;
@@ -53,6 +65,13 @@ export default function PostDetail({ route }) {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.contentWrapper}>
+
+        {/* Botão de Voltar */}
+        <TouchableOpacity onPress={handleVoltar} style={styles.voltarButton}>
+          <Entypo name="chevron-left" size={24} color="#04bc64" />
+          <Text style={styles.voltarText}>Voltar</Text>
+        </TouchableOpacity>
+
         <Image source={{ uri: pet.foto }} style={styles.image} />
 
         <View style={styles.infoContainer}>
@@ -83,21 +102,30 @@ export default function PostDetail({ route }) {
           <Text style={styles.value}>{pet.contato}</Text>
 
           <View style={styles.buttonsContainer}>
-            <TouchableOpacity style={[styles.button, styles.localizacaoButton]} onPress={handleLocalizacao}>
+            <TouchableOpacity
+              style={[styles.button, styles.localizacaoButton]}
+              onPress={handleLocalizacao}
+            >
               <View style={styles.buttonContent}>
                 <Entypo name="location-pin" size={20} color="#fff" />
                 <Text style={styles.buttonText}> Localização</Text>
               </View>
             </TouchableOpacity>
 
-            <TouchableOpacity style={[styles.button, styles.contatoButton]} onPress={handleContato}>
+            <TouchableOpacity
+              style={[styles.button, styles.contatoButton]}
+              onPress={handleContato}
+            >
               <View style={styles.buttonContent}>
                 <FontAwesome name="phone" size={20} color="#fff" />
                 <Text style={styles.buttonText}> Fazer Contato</Text>
               </View>
             </TouchableOpacity>
 
-            <TouchableOpacity style={[styles.button, styles.denunciarButton]} onPress={handleDenunciar}>
+            <TouchableOpacity
+              style={[styles.button, styles.denunciarButton]}
+              onPress={handleDenunciar}
+            >
               <View style={styles.buttonContent}>
                 <MaterialIcons name="report-problem" size={20} color="#fff" />
                 <Text style={styles.buttonText}> Denunciar</Text>
@@ -120,13 +148,25 @@ const styles = StyleSheet.create({
     width: '90%',
     alignItems: 'center',
   },
+  voltarButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    marginBottom: 10,
+  },
+  voltarText: {
+    color: '#04bc64',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginLeft: 5,
+  },
   image: {
-  width: '100%',
-  height: 300,
-  borderRadius: 15,
-  borderWidth: 3,
-  borderColor: '#fff', 
-},
+    width: '100%',
+    height: 300,
+    borderRadius: 15,
+    borderWidth: 3,
+    borderColor: '#fff',
+  },
   infoContainer: {
     backgroundColor: '#04bc64',
     borderRadius: 15,
@@ -188,8 +228,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   buttonContent: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  justifyContent: 'center',
-},
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
