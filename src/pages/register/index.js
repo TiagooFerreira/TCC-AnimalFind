@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 import {
-  View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Modal
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  Modal,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { useNavigation } from '@react-navigation/native';
@@ -56,105 +64,110 @@ export default function Register() {
   }
 
   return (
-    <ScrollView style={styles.container}>
-      <Animatable.View animation="fadeInLeft" delay={500} style={styles.containerHeader}>
-        <Text style={styles.message}>Faça seu cadastro</Text>
-      </Animatable.View>
-
-      <Animatable.View animation="fadeInUp" delay={650} style={styles.containerForm}>
-        <Text style={styles.title}>Nome</Text>
-        <TextInput
-          placeholder="Digite seu nome..."
-          style={styles.input}
-          value={nome}
-          onChangeText={setNome}
-        />
-
-        <Text style={styles.title}>Email</Text>
-        <TextInput
-          placeholder="Digite seu email..."
-          style={styles.input}
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
-
-        <Text style={styles.title}>Telefone</Text>
-        <TextInputMask
-          type={'cel-phone'}
-          options={{
-            maskType: 'BRL',
-            withDDD: true,
-            dddMask: '(99) '
-          }}
-          placeholder="Digite seu número de telefone..."
-          style={styles.input}
-          value={telefone}
-          onChangeText={setTelefone}
-          keyboardType="phone-pad"
-        />
-
-        <Text style={styles.title}>CPF</Text>
-        <TextInputMask
-          type={'cpf'}
-          placeholder="Digite seu CPF..."
-          style={styles.input}
-          value={cpf}
-          onChangeText={setCpf}
-          keyboardType="numeric"
-        />
-
-        <Text style={styles.title}>Senha</Text>
-        <TextInput
-          secureTextEntry={true}
-          placeholder="Sua senha..."
-          style={styles.input}
-          value={senha}
-          onChangeText={setSenha}
-        />
-
-        <TouchableOpacity style={styles.button} onPress={registerUser}>
-          <Text style={styles.buttonText}>Cadastrar</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => navigation.navigate('SignIn')} style={styles.buttonRegister}>
-          <Text style={styles.registerText}>Voltar para página de login</Text>
-        </TouchableOpacity>
-      </Animatable.View>
-
-      <Modal
-        visible={modalVisible}
-        animationType="fade"
-        transparent
-        onRequestClose={() => setModalVisible(false)}
+    <KeyboardAvoidingView
+      style={{ flex: 1, backgroundColor: '#04bc64' }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
+    >
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardShouldPersistTaps="handled"
       >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalText}>{modalMessage}</Text>
-            <TouchableOpacity
-              style={styles.modalButton}
-              onPress={() => {
-                setModalVisible(false);
-                if (modalMessage.includes('sucesso')) {
-                  navigation.navigate('SignIn');
-                }
-              }}
-            >
-              <Text style={styles.modalButtonText}>OK</Text>
-            </TouchableOpacity>
+        <Animatable.View animation="fadeInLeft" delay={500} style={styles.containerHeader}>
+          <Text style={styles.message}>Faça seu cadastro</Text>
+        </Animatable.View>
+
+        <Animatable.View animation="fadeInUp" delay={650} style={styles.containerForm}>
+          <Text style={styles.title}>Nome</Text>
+          <TextInput
+            placeholder="Digite seu nome..."
+            style={styles.input}
+            value={nome}
+            onChangeText={setNome}
+          />
+
+          <Text style={styles.title}>Email</Text>
+          <TextInput
+            placeholder="Digite seu email..."
+            style={styles.input}
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
+
+          <Text style={styles.title}>Telefone</Text>
+          <TextInputMask
+            type={'cel-phone'}
+            options={{
+              maskType: 'BRL',
+              withDDD: true,
+              dddMask: '(99) '
+            }}
+            placeholder="Digite seu número de telefone..."
+            style={styles.input}
+            value={telefone}
+            onChangeText={setTelefone}
+            keyboardType="phone-pad"
+          />
+
+          <Text style={styles.title}>CPF</Text>
+          <TextInputMask
+            type={'cpf'}
+            placeholder="Digite seu CPF..."
+            style={styles.input}
+            value={cpf}
+            onChangeText={setCpf}
+            keyboardType="numeric"
+          />
+
+          <Text style={styles.title}>Senha</Text>
+          <TextInput
+            secureTextEntry={true}
+            placeholder="Sua senha..."
+            style={styles.input}
+            value={senha}
+            onChangeText={setSenha}
+          />
+
+          <TouchableOpacity style={styles.button} onPress={registerUser}>
+            <Text style={styles.buttonText}>Cadastrar</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => navigation.navigate('SignIn')} style={styles.buttonRegister}>
+            <Text style={styles.registerText}>Voltar para página de login</Text>
+          </TouchableOpacity>
+        </Animatable.View>
+
+        <Modal
+          visible={modalVisible}
+          animationType="fade"
+          transparent
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalText}>{modalMessage}</Text>
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={() => {
+                  setModalVisible(false);
+                  if (modalMessage.includes('sucesso')) {
+                    navigation.navigate('SignIn');
+                  }
+                }}
+              >
+                <Text style={styles.modalButtonText}>OK</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      </Modal>
-    </ScrollView>
+        </Modal>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#04bc64',
-  },
   containerHeader: {
     marginTop: '8%',
     marginStart: '8%',

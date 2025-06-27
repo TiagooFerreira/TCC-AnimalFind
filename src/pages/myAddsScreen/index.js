@@ -1,54 +1,50 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View, Text, StyleSheet, FlatList, TouchableOpacity, Modal,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import * as Animatable from 'react-native-animatable';
 
+import { getDatabase, ref, onValue, remove } from 'firebase/database';
+import { getAuth } from 'firebase/auth';
+
 export default function MyAdsScreen() {
   const navigation = useNavigation();
 
-  const [myAnimals, setMyAnimals] = useState([
-    {
-      id: '1',
-      nome: 'Levi',
-      tipo: 'Cachorro',
-      raca: 'Pastor Alemão',
-      idade: '4 anos',
-      sexo: 'Macho',
-      castrado: 'Não',
-      vacinado: 'Sim',
-      temperamento: 'Brincalhão e amigável',
-      contato: '(32) 9999-9999',
-    },
-    {
-      id: '2',
-      nome: 'Bela',
-      tipo: 'Gato',
-      raca: 'Angorá',
-      idade: '2 anos',
-      sexo: 'Fêmea',
-      castrado: 'Não',
-      vacinado: 'Sim',
-      temperamento: 'Brincalhão e amigável',
-      contato: '(11) 1111-2222',
-    },
-    {
-      id: '3',
-      nome: 'Mel',
-      tipo: 'Cachorro',
-      raca: 'Poodle',
-      idade: '4 anos',
-      sexo: 'Macho',
-      castrado: 'Não',
-      vacinado: 'Sim',
-      temperamento: 'Brincalhão e amigável',
-      contato: '(21) 5555-5555',
-    },
-  ]);
-
+  const [myAnimals, setMyAnimals] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
+  const [uid, setUid] = useState(null);
+
+  useEffect(() => {
+    const auth = getAuth();
+    const user = auth.currentUser;
+
+    if (!user) return;
+
+    setUid(user.uid);
+
+    const db = getDatabase();
+    const userPetsRef = ref(db, `pets/${user.uid}`);
+
+    const unsubscribe = onValue(userPetsRef, (snapshot) => {
+      const data = snapshot.val();
+      const petList = [];
+
+      if (data) {
+        Object.entries(data).forEach(([id, pet]) => {
+          petList.push({
+            id,
+            ...pet,
+          });
+        });
+      }
+
+      setMyAnimals(petList);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const handleDelete = (id) => {
     setSelectedId(id);
@@ -56,10 +52,19 @@ export default function MyAdsScreen() {
   };
 
   const confirmDelete = () => {
-    const updatedList = myAnimals.filter(item => item.id !== selectedId);
-    setMyAnimals(updatedList);
-    setShowModal(false);
-    setSelectedId(null);
+    if (!uid || !selectedId) return;
+
+    const db = getDatabase();
+    const petRef = ref(db, `pets/${uid}/${selectedId}`);
+
+    remove(petRef)
+      .then(() => {
+        setShowModal(false);
+        setSelectedId(null);
+      })
+      .catch((error) => {
+        console.error("Erro ao excluir pet:", error);
+      });
   };
 
   const renderItem = ({ item }) => (
@@ -96,6 +101,9 @@ export default function MyAdsScreen() {
           keyExtractor={(item) => item.id}
           renderItem={renderItem}
           contentContainerStyle={{ paddingBottom: 20 }}
+          ListEmptyComponent={
+            <Text style={{ textAlign: 'center', marginTop: 30 }}>Nenhum anúncio encontrado.</Text>
+          }
         />
 
         <TouchableOpacity

@@ -5,71 +5,37 @@ import {
 } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
-
-const mockPosts = [ {
-    id: '1',
-    nome: 'Levi',
-    tipo: 'Cachorro',
-    raca: 'Pastor Alemão',
-    idade: '4 anos',
-    sexo: 'Macho',
-    castrado: 'Não',
-    vacinado: 'Sim',
-    temperamento: 'Brincalhão e amigável',
-    contato: '(88) 88888-8888',
-    foto: 'https://nossopastoralemao.com.br/wp-content/uploads/2021/10/pastor-alemao-filhote.jpg'
-  },
-  {
-    id: '2',
-    nome: 'Bela',
-    tipo: 'Gato',
-    raca: 'Angorá',
-    idade: '2 anos',
-    sexo: 'Fêmea',
-    castrado: 'Não',
-    vacinado: 'Sim',
-    temperamento: 'Brincalhão e amigável',
-    contato: '(88) 88888-8888',
-    foto: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2P34btrR7jkmZ-AVvjV3YzI4dn0pcCSHezQ&s'
-  },
-  {
-    id: '3',
-    nome: 'Mel',
-    tipo: 'Cachorro',
-    raca: 'Poodle',
-    idade: '4 anos',
-    sexo: 'Macho',
-    castrado: 'Não',
-    vacinado: 'Sim',
-    temperamento: 'Brincalhão e amigável',
-    contato: '(88) 88888-8888',
-    foto: 'https://portalmelhoresamigos.com.br/wp-content/uploads/2015/11/poodle_cachorro.png'
-  },
-  {
-    id: '4',
-    nome: 'Levi',
-    tipo: 'Cachorro',
-    raca: 'Pastor Alemão',
-    idade: '4 anos',
-    sexo: 'Macho',
-    castrado: 'Não',
-    vacinado: 'Sim',
-    temperamento: 'Brincalhão e amigável',
-    contato: '(88) 88888-8888',
-    foto: 'https://placedog.net/400/300'
-  } ];
+import { getDatabase, ref, onValue } from 'firebase/database';
 
 export default function PostList() {
   const navigation = useNavigation();
+  const [pets, setPets] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simula um delay de carregamento (2 segundos)
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 1000);
+    const db = getDatabase();
+    const petsRef = ref(db, 'pets');
 
-    return () => clearTimeout(timer);
+    const unsubscribe = onValue(petsRef, (snapshot) => {
+      const data = snapshot.val();
+      const petList = [];
+
+      if (data) {
+        Object.entries(data).forEach(([userId, userPets]) => {
+          Object.entries(userPets).forEach(([petId, pet]) => {
+            petList.push({
+              id: petId,
+              ...pet,
+            });
+          });
+        });
+      }
+
+      setPets(petList);
+      setLoading(false);
+    });
+
+    return () => unsubscribe(); // remove listener ao desmontar
   }, []);
 
   const renderItem = ({ item }) => (
@@ -77,7 +43,13 @@ export default function PostList() {
       style={styles.card}
       onPress={() => navigation.navigate('PostDetail', { pet: item })}
     >
-      <Image source={{ uri: item.foto }} style={styles.image} />
+  {item.foto ? (
+    <Image source={{ uri: item.foto }} style={styles.image} />
+      ) : (
+    <View style={[styles.image, { justifyContent: 'center', alignItems: 'center', backgroundColor: '#ccc' }]}>
+      <Text style={{ color: '#333' }}>Sem imagem</Text>
+    </View>
+)}
       <Text style={styles.name}>{item.nome}</Text>
       <Text style={styles.info}>{item.tipo} • {item.raca}</Text>
     </TouchableOpacity>
@@ -96,17 +68,20 @@ export default function PostList() {
     <View style={styles.container}>
       <Text style={styles.header}>Animais para Adoção</Text>
       <FlatList
-        data={mockPosts}
+        data={pets}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         contentContainerStyle={styles.list}
+        ListEmptyComponent={
+          <Text style={{ textAlign: 'center', marginTop: 30 }}>Nenhum animal cadastrado.</Text>
+        }
       />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#dcdcdc' },
+  container: { flex: 1, backgroundColor: '#ffffff' },
   header: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -124,7 +99,8 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 20,
     fontWeight: 'bold',
-    padding: 8
+    padding: 8,
+    color: '#fff',
   },
   info: {
     fontSize: 16,

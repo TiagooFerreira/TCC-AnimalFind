@@ -4,27 +4,39 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Alert
+  Alert,
+  TextInput,
+  Modal,
 } from 'react-native';
 
 import * as Animatable from 'react-native-animatable';
 import { useNavigation } from '@react-navigation/native';
 
-import { getAuth, signOut } from 'firebase/auth';
+import { getAuth, signOut, reauthenticateWithCredential, EmailAuthProvider, updatePassword } from 'firebase/auth';
 import { getDatabase, ref, get } from 'firebase/database';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default function UserDataScreen() {
   const navigation = useNavigation();
+  const auth = getAuth();
+  const user = auth.currentUser;
+
   const [userData, setUserData] = useState({
     nome: '',
     email: '',
-    senha: '••••••••', // Apenas simbólico
+    senha: '••••••••',
   });
 
-  useEffect(() => {
-    const auth = getAuth();
-    const user = auth.currentUser;
+  const [showModal, setShowModal] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  useEffect(() => {
     if (user) {
       const uid = user.uid;
       const db = getDatabase();
@@ -37,13 +49,7 @@ export default function UserDataScreen() {
             setUserData({
               nome: data.nome || 'Nome não informado',
               email: user.email || 'Email não disponível',
-              senha: '••••••••'
-            });
-          } else {
-            setUserData({
-              nome: 'Nome não encontrado',
-              email: user.email || 'Email não disponível',
-              senha: '••••••••'
+              senha: '••••••••',
             });
           }
         })
@@ -53,25 +59,56 @@ export default function UserDataScreen() {
     }
   }, []);
 
-  const handleLogout = () => {
-    const auth = getAuth();
-    signOut(auth)
-      .then(() => {
-        Alert.alert("Logout", "Sua conta foi deslogada com sucesso.");
-        navigation.navigate('SignIn');
-      })
-      .catch(error => {
-        Alert.alert("Erro", "Erro ao deslogar: " + error.message);
-      });
-  };
+const handleLogout = () => {
+  Alert.alert(
+    'Confirmação',
+    'Você tem certeza que deseja sair?',
+    [
+      {
+        text: 'Cancelar',
+        style: 'cancel',
+      },
+      {
+        text: 'Sair',
+        style: 'destructive',
+        onPress: () => {
+          signOut(auth)
+            .then(() => {
+              Alert.alert("Logout", "Sua conta foi deslogada com sucesso.");
+              navigation.navigate('SignIn');
+            })
+            .catch(error => {
+              Alert.alert("Erro", "Erro ao deslogar: " + error.message);
+            });
+        }
+      }
+    ]
+  );
+};
 
   const handleChangePassword = () => {
-    Alert.alert("Trocar Senha", "Aqui você poderá trocar sua senha.");
+    setShowModal(true);
+  };
 
+  const handlePasswordUpdate = async () => {
+    if (newPassword !== confirmPassword) {
+      Alert.alert("Erro", "As senhas não coincidem.");
+      return;
+    }
 
-    // navigation.navigate('ChangePassword');
+    const credential = EmailAuthProvider.credential(user.email, currentPassword);
 
-
+    try {
+      await reauthenticateWithCredential(user, credential);
+      await updatePassword(user, newPassword);
+      Alert.alert("Sucesso", "Senha atualizada com sucesso.");
+      setShowModal(false);
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+    } catch (error) {
+      Alert.alert("Erro", error.message);
+    }
   };
 
   return (
@@ -103,16 +140,89 @@ export default function UserDataScreen() {
           <Text style={styles.buttonText}>Sair</Text>
         </TouchableOpacity>
       </Animatable.View>
+
+      <Modal
+        visible={showModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalTitle}>Trocar Senha</Text>
+
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={styles.input}
+                placeholder="Senha atual"
+                secureTextEntry={!showCurrentPassword}
+                value={currentPassword}
+                onChangeText={setCurrentPassword}
+              />
+              <TouchableOpacity onPress={() => setShowCurrentPassword(!showCurrentPassword)}>
+                <MaterialCommunityIcons
+                  name={showCurrentPassword ? 'eye-off-outline' : 'eye-outline'}
+                  size={24}
+                  color="#333"
+                />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={styles.input}
+                placeholder="Nova senha"
+                secureTextEntry={!showNewPassword}
+                value={newPassword}
+                onChangeText={setNewPassword}
+              />
+              <TouchableOpacity onPress={() => setShowNewPassword(!showNewPassword)}>
+                <MaterialCommunityIcons
+                  name={showNewPassword ? 'eye-off-outline' : 'eye-outline'}
+                  size={24}
+                  color="#333"
+                />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={styles.input}
+                placeholder="Confirmar nova senha"
+                secureTextEntry={!showConfirmPassword}
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+              />
+              <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
+                <MaterialCommunityIcons
+                  name={showConfirmPassword ? 'eye-off-outline' : 'eye-outline'}
+                  size={24}
+                  color="#333"
+                />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.modalButtons}>
+              <TouchableOpacity onPress={() => setShowModal(false)} style={styles.cancelButton}>
+                <Text style={styles.cancelButtonText}>Cancelar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handlePasswordUpdate} style={styles.confirmButton}>
+                <Text style={styles.confirmButtonText}>Salvar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container:{
+  container: {
     flex: 1,
     backgroundColor: '#04bc64',
   },
-  containerHeader:{
+  containerHeader: {
     marginTop: '10%',
     marginStart: '8%',
   },
@@ -121,7 +231,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#fff',
   },
-  message:{
+  message: {
     fontSize: 28,
     fontWeight: 'bold',
     color: '#fff',
@@ -155,7 +265,6 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     paddingVertical: 10,
     marginTop: 20,
-    justifyContent: 'center',
     alignItems: 'center',
   },
   buttonTextMyAds: {
@@ -169,13 +278,12 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     paddingVertical: 10,
     marginTop: 30,
-    justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   buttonTextChangePassword: {
     color: '#fff',
     fontSize: 18,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   button: {
     backgroundColor: '#04bc64',
@@ -183,12 +291,69 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     paddingVertical: 10,
     marginTop: 100,
-    justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
-  buttonText:{
+  buttonText: {
     color: '#fff',
     fontSize: 18,
-    fontWeight: 'bold'
-  }
+    fontWeight: 'bold',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 10,
+    width: '90%',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  inputWrapper: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderColor: '#ccc',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  input: {
+    flex: 1,
+    height: 40,
+    fontSize: 16,
+    color: '#333',
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  cancelButton: {
+    flex: 1,
+    backgroundColor: '#ccc',
+    padding: 10,
+    borderRadius: 5,
+    marginRight: 10,
+    alignItems: 'center',
+  },
+  cancelButtonText: {
+    fontWeight: 'bold',
+    color: '#000',
+  },
+  confirmButton: {
+    flex: 1,
+    backgroundColor: '#04bc64',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  confirmButtonText: {
+    fontWeight: 'bold',
+    color: '#fff',
+  },
 });
